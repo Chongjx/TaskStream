@@ -5,8 +5,11 @@ import se.edu.inclass.task.Deadline;
 import se.edu.inclass.task.Task;
 import se.edu.inclass.task.TaskNameComparator;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 public class Main {
 
@@ -19,10 +22,16 @@ public class Main {
         System.out.println("Printing deadlines");
         printDeadlines(tasksData);
 
+        System.out.println("Total number of deadlines: " + countDeadlines(tasksData));
+
+        for (Task t : filterByString(tasksData, "11")) {
+            System.out.println(t);
+        }
         System.out.println("Total number of deadlines: " + countDeadlinesUsingStreams(tasksData));
         
-        prinDataUsingStream(tasksData);
-        printDeadlinesUsingStream(tasksData);
+        printDataUsingStream(tasksData);
+        printDeadlinesUsingStreams(tasksData);
+
     }
 
     private static int countDeadlines(ArrayList<Task> tasksData) {
@@ -49,7 +58,7 @@ public class Main {
         }
     }
 
-    public static void prinDataUsingStream(ArrayList<Task> tasksData) {
+    public static void printDataUsingStream(ArrayList<Task> tasksData) {
         tasksData.stream()
                 .forEach(System.out::println);
     }
@@ -62,9 +71,19 @@ public class Main {
         }
     }
 
-    public static void printDeadlinesUsingStream(ArrayList<Task> tasksData) {
+    public static void printDeadlinesUsingStreams(ArrayList<Task> tasksData) {
         tasksData.stream()
-                .filter((t) -> t instanceof Deadline)
+                .filter((s) -> s instanceof Deadline)
+                .sorted((a, b) -> a.getDescription().compareToIgnoreCase(b.getDescription()))
                 .forEach(System.out::println);
+    }
+
+    public static ArrayList<Task> filterByString(ArrayList<Task> tasksData, String filterString) {
+        ArrayList<Task> filteredTaskList;
+        filteredTaskList = (ArrayList<Task>) tasksData.stream()
+                .filter((s) -> s.getDescription().contains(filterString))
+                .collect(toList());
+
+        return filteredTaskList;
     }
 }
